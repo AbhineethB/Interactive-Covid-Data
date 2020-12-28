@@ -1,0 +1,47 @@
+---
+title: "World Data"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+runtime: shiny
+---
+
+
+
+```{r include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(rlang)
+library(shiny)
+library(readr)
+```
+
+
+
+```{r include=FALSE}
+covid = read_csv('full_data.csv')
+
+```
+
+
+
+```{r echo=FALSE}
+country = unique(covid$location)
+selectInput('location',
+            label = 'Choose a Country',
+            choices = country)
+```
+
+
+
+```{r echo=FALSE}
+renderPlot({covid %>% 
+    filter(location == input$location) %>% 
+    ggplot(aes(x=date, y = total_cases)) +
+    geom_point()+
+    geom_line()+
+    labs(title = 'Total cases to date by Country', x='Date', y='Total Number of Cases')+
+    theme_minimal()})
+```
+
